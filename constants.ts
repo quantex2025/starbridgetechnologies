@@ -1,6 +1,7 @@
 import React from 'react';
-import type { Service, Project, Testimonial } from './types';
+import type { Service, Project, Testimonial, WhyChooseUsItem } from './types';
 import { AiIcon, AutomationIcon, WebDevIcon, DataScienceIcon } from './components/icons/ServiceIcons';
+import { TargetIcon, LightbulbIcon, UsersIcon } from './components/icons/WhyChooseUsIcons';
 import { LinkedInIcon, InstagramIcon } from './components/icons/ContactIcons';
 
 
@@ -29,6 +30,30 @@ export const SERVICES: Service[] = [
     title: 'Data Science',
     description: 'Transform your raw data into actionable intelligence, driving smarter decisions and strategic growth.',
   },
+];
+
+export const WHY_CHOOSE_US: WhyChooseUsItem[] = [
+    {
+        icon: React.createElement(TargetIcon),
+        title: 'Proven Results',
+        description: 'We focus on delivering measurable business outcomes, not just lines of code.',
+        value: 98,
+        suffix: '%',
+    },
+    {
+        icon: React.createElement(LightbulbIcon),
+        title: 'Innovative Solutions',
+        description: 'Leveraging the latest technologies to build future-proof systems that give you a competitive edge.',
+        value: 50,
+        suffix: '+',
+    },
+    {
+        icon: React.createElement(UsersIcon),
+        title: 'Client-Centric Approach',
+        description: 'Your success is our priority. We work as a true partner to understand and achieve your goals.',
+        value: 100,
+        suffix: '%',
+    }
 ];
 
 export const PROJECTS: Project[] = [

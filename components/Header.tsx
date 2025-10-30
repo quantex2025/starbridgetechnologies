@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { SunIcon, MoonIcon } from './icons/ThemeIcons';
+import { AnimatedThemeIcon } from './icons/ThemeIcons';
 
 interface HeaderProps {
   theme: string;
@@ -22,6 +22,7 @@ const Header: React.FC<HeaderProps> = ({ theme, toggleTheme }) => {
   const navLinks = [
     { href: '#about', label: 'About' },
     { href: '#services', label: 'Services' },
+    { href: '#why-us', label: 'Why Us' },
     { href: '#portfolio', label: 'Portfolio' },
     { href: '#contact', label: 'Contact' },
   ];
@@ -56,10 +57,10 @@ const Header: React.FC<HeaderProps> = ({ theme, toggleTheme }) => {
           <div className="flex items-center">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-300 hover:text-primary hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-bg focus:ring-primary transition-all"
+              className="theme-toggle-button p-2 rounded-full text-gray-300 hover:text-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-bg focus:ring-primary transition-all relative flex items-center justify-center w-10 h-10"
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+              <AnimatedThemeIcon theme={theme} />
             </button>
             <div className="md:hidden ml-4">
               <button
@@ -101,4 +102,3 @@ const Header: React.FC<HeaderProps> = ({ theme, toggleTheme }) => {
 };
 
 export default Header;
-   

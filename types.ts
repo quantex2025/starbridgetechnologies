@@ -22,3 +22,11 @@ export interface Testimonial {
   avatar: string;
   rating: number;
 }
+
+export interface WhyChooseUsItem {
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+    value: number;
+    suffix: string;
+}

@@ -22,4 +22,16 @@ export const MoonIcon: React.FC = () => (
     />
   </svg>
 );
-   
+
+export const AnimatedThemeIcon: React.FC<{ theme: string }> = ({ theme }) => {
+    return (
+        <div className="relative w-6 h-6">
+            <div className={`sun-icon absolute inset-0 transition-all duration-500 ease-in-out ${theme === 'dark' ? 'transform rotate-90 opacity-0' : 'transform rotate-0 opacity-100'}`}>
+                <SunIcon />
+            </div>
+            <div className={`moon-icon absolute inset-0 transition-all duration-500 ease-in-out ${theme === 'dark' ? 'transform rotate-0 opacity-100' : 'transform -rotate-90 opacity-0'}`}>
+                <MoonIcon />
+            </div>
+        </div>
+    );
+};

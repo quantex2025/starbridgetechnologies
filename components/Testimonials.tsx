@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { TESTIMONIALS } from '../constants';
 import useScrollAnimation from '../hooks/useScrollAnimation';
 
@@ -17,14 +17,34 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
 const Testimonials: React.FC = () => {
   const sectionRef = useScrollAnimation<HTMLDivElement>();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const autoplayInterval = useRef<number | null>(null);
+
+  const handleNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+  }, []);
 
   const handlePrev = () => {
-      setCurrentIndex((prevIndex) => (prevIndex === 0 ? TESTIMONIALS.length - 1 : prevIndex - 1));
+    setCurrentIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
   };
 
-  const handleNext = () => {
-      setCurrentIndex((prevIndex) => (prevIndex === TESTIMONIALS.length - 1 ? 0 : prevIndex + 1));
-  };
+  const startAutoplay = useCallback(() => {
+    if (autoplayInterval.current !== null) return;
+    autoplayInterval.current = window.setInterval(handleNext, 5000);
+  }, [handleNext]);
+
+  const stopAutoplay = useCallback(() => {
+    if (autoplayInterval.current !== null) {
+      clearInterval(autoplayInterval.current);
+      autoplayInterval.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    startAutoplay();
+    return () => stopAutoplay();
+  }, [startAutoplay, stopAutoplay]);
+  
+  const numVisible = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
   
   return (
     <section id="testimonials" className="py-20 lg:py-32 bg-gray-900/20 dark:bg-gray-900/20">
@@ -38,11 +58,11 @@ const Testimonials: React.FC = () => {
           </p>
         </div>
 
-        <div className="testimonial-carousel-wrapper">
+        <div className="testimonial-carousel-wrapper" onMouseEnter={stopAutoplay} onMouseLeave={startAutoplay}>
           <div className="testimonial-carousel-container">
-            <div className="testimonial-carousel-slider" style={{ transform: `translateX(-${currentIndex * 100 / TESTIMONIALS.length}%)`, width: `${TESTIMONIALS.length * 100}%` }}>
+            <div className="testimonial-carousel-slider" style={{ transform: `translateX(-${currentIndex * (100 / numVisible)}%)` }}>
               {TESTIMONIALS.map((testimonial, index) => (
-                <div key={index} className="testimonial-card px-4" style={{width: `${100 / TESTIMONIALS.length}%`}}>
+                <div key={index} className="testimonial-card px-4">
                     <div className="bg-dark-bg h-full p-8 rounded-lg border border-gray-700/50 flex flex-col">
                       <StarRating rating={testimonial.rating} />
                       <p className="text-gray-300 dark:text-gray-300 italic mb-6 flex-grow">"{testimonial.quote}"</p>

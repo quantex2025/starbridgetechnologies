@@ -21,7 +21,8 @@ const About: React.FC = () => {
             {SERVICES.map((service, index) => (
                 <div key={service.title} className="flex flex-col items-center" style={{ animation: `slideInUp 1s ease-out ${index * 150}ms forwards`, opacity: 0 }}>
                     <div className="text-primary w-16 h-16 flex items-center justify-center bg-primary/10 rounded-full border-2 border-primary/20 mb-4 transition-all duration-300 hover:bg-primary/20 hover:scale-110">
-                        {React.cloneElement(service.icon as React.ReactElement, { className: "h-8 w-8" })}
+                        {/* FIX: Cast the icon to a ReactElement with a specific prop type to resolve the cloneElement error. */}
+                        {React.cloneElement(service.icon as React.ReactElement<{ className?: string }>, { className: "h-8 w-8" })}
                     </div>
                     <h3 className="font-orbitron text-white">{service.title}</h3>
                 </div>

@@ -10,8 +10,15 @@ interface Particle {
   color: string;
 }
 
+interface Mouse {
+    x: number | null;
+    y: number | null;
+    radius: number;
+}
+
 const ParticleBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouse = useRef<Mouse>({ x: null, y: null, radius: 150 }).current;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -21,6 +28,19 @@ const ParticleBackground: React.FC = () => {
 
     let animationFrameId: number;
     let particles: Particle[] = [];
+
+    const handleMouseMove = (event: MouseEvent) => {
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
+    };
+    
+    const handleMouseOut = () => {
+        mouse.x = null;
+        mouse.y = null;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseout', handleMouseOut);
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -37,8 +57,8 @@ const ParticleBackground: React.FC = () => {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           radius: Math.random() * 2 + 1,
-          vx: Math.random() * 1 - 0.5,
-          vy: Math.random() * 1 - 0.5,
+          vx: Math.random() * 0.5 - 0.25,
+          vy: Math.random() * 0.5 - 0.25,
           color: colors[Math.floor(Math.random() * colors.length)],
         });
       }
@@ -48,6 +68,20 @@ const ParticleBackground: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const p of particles) {
+        // Mouse interaction - repel effect
+        if (mouse.x !== null && mouse.y !== null) {
+            const dxMouse = p.x - mouse.x;
+            const dyMouse = p.y - mouse.y;
+            const distanceMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+            if (distanceMouse < mouse.radius) {
+                const forceDirectionX = dxMouse / distanceMouse;
+                const forceDirectionY = dyMouse / distanceMouse;
+                const force = (mouse.radius - distanceMouse) / mouse.radius;
+                p.x += forceDirectionX * force * 2;
+                p.y += forceDirectionY * force * 2;
+            }
+        }
+        
         p.x += p.vx;
         p.y += p.vy;
 
@@ -89,19 +123,21 @@ const ParticleBackground: React.FC = () => {
     createParticles();
     animate();
 
-    window.addEventListener('resize', () => {
+    const handleResize = () => {
         resizeCanvas();
         createParticles();
-    });
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
       window.cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseout', handleMouseOut);
     };
-  }, []);
+  }, [mouse]);
 
   return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full -z-10" />;
 };
 
 export default ParticleBackground;
-   
